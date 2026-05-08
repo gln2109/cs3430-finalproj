@@ -1,0 +1,135 @@
+<!-- cs3430-finalproj
+     gln2109 -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>WebAudio Drum Kit</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="main.js" defer></script>
+</head>
+
+<body>
+    <h2>COMS3430 Final Project: WebAudio Drum Kit</h2>
+    <h3>Grayson Newell ~ gln2109</h3>
+    <hr>
+    <h3>Drums</h3>
+    <div id="tuningDiv">
+        <div id="kickDiv" class="drumTuning">
+            <span class="drumHeader">Kick</span>
+            <button onclick="kick()">Play</button>
+            <div>
+                <label for="kickVolume">Volume: </label>
+                <span class="sliderValue" data-scale="0.1" data-unit="">0</span>
+                <input type="range" min="1" max="10" value="8" class="slider" id="kickVolume">
+            </div>
+            <div>
+                <label for="kickAttack">Attack: </label>
+                <span class="sliderValue" data-scale="0.01" data-unit="s">0</span>
+                <input type="range" min="1" max="20" value="1" class="slider" id="kickAttack">
+            </div>
+            <div>
+                <label for="kickDecay">Decay: </label>
+                <span class="sliderValue" data-scale="0.05" data-unit="s">0</span>
+                <input type="range" min="1" max="20" value="4" class="slider" id="kickDecay">
+            </div>
+        </div>
+
+        <div id="snareDiv" class="drumTuning">
+            <span class="drumHeader">Snare</span>
+            <button onclick="snare()">Play</button>
+            <div>
+                <label for="snareVolume">Volume: </label>
+                <span class="sliderValue" data-scale="0.1" data-unit="">0</span>
+                <input type="range" min="1" max="10" value="8" class="slider" id="snareVolume">
+            </div>
+            <div>
+                <label for="snareAttack">Attack: </label>
+                <span class="sliderValue" data-scale="0.01" data-unit="s">0</span>
+                <input type="range" min="1" max="20" value="3" class="slider" id="snareAttack">
+            </div>
+            <div>
+                <label for="snareDecay">Decay: </label>
+                <span class="sliderValue" data-scale="0.05" data-unit="s">0</span>
+                <input type="range" min="1" max="20" value="8" class="slider" id="snareDecay">
+            </div>
+        </div>
+
+        <div id="hatDiv" class="drumTuning">
+            <span class="drumHeader">Hi-Hat</span>
+            <button onclick="hat()">Play</button>
+            <div>
+                <label for="hatVolume">Volume: </label>
+                <span class="sliderValue" data-scale="0.1" data-unit="">0</span>
+                <input type="range" min="1" max="10" value="8" class="slider" id="hatVolume">
+            </div>
+            <div>
+                <label for="hatAttack">Attack: </label>
+                <span class="sliderValue" data-scale="0.01" data-unit="s">0</span>
+                <input type="range" min="1" max="20" value="1" class="slider" id="hatAttack">
+            </div>
+            <div>
+                <label for="hatDecay">Decay: </label>
+                <span class="sliderValue" data-scale="0.05" data-unit="s">0</span>
+                <input type="range" min="1" max="20" value="2" class="slider" id="hatDecay">
+            </div>
+        </div>
+
+        <div id="clapDiv" class="drumTuning">
+            <span class="drumHeader">Clap</span>
+            <button>Play</button>
+            <div>
+                <label for="clapVolume">Volume: </label>
+                <span class="sliderValue" data-scale="0.1" data-unit="">0</span>
+                <input type="range" min="1" max="10" value="8" class="slider" id="clapVolume">
+            </div>
+            <div>
+                <label for="clapAttack">Attack: </label>
+                <span class="sliderValue" data-scale="0.01" data-unit="s">0</span>
+                <input type="range" min="1" max="20" value="1" class="slider" id="clapAttack">
+            </div>
+            <div>
+                <label for="clapDecay">Decay: </label>
+                <span class="sliderValue" data-scale="0.05" data-unit="s">0</span>
+                <input type="range" min="1" max="20" value="2" class="slider" id="clapDecay">
+            </div>
+        </div>
+
+    </div>
+
+    <hr>
+    <h3>Sequencer</h3>
+    <div id="sequencerDiv">
+
+        <div class="sequencerClass">
+            <div>
+                <label for="sequenceInput">Sequence: </label>
+                <input id="sequenceInput" style="width: 300px"/>
+            </div>
+            <div>
+                <label for="bpmInput">BPM: </label>
+                <input id="bpmInput" style="width: 50px" value="120"/>
+            </div>
+            <div style="width:50%">
+                <label for="masterVolume">Master Volume: </label>
+                <span class="sliderValue" data-scale="0.1" data-unit="">0</span>
+                <input type="range" min="1" max="10" value="8" class="slider" id="masterVolume">
+            </div>
+            <button onclick="playSequence()">Play</button>
+            <button onclick="stopSequence()">Stop</button>
+        </div>
+
+        <div class="sequencerClass">
+            <h4>How to use:</h4>
+            <p>this is how to use the sequencer
+            k: kick drum
+            s: snare drum
+            h: hi-hat</p>
+        </div>
+    </div>
+
+</body>
+
+</html>
