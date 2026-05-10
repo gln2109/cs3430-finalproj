@@ -27,7 +27,7 @@ const INPUT_MAP = {
     "s": () => snare(),
     "h": () => hat()
 }
-const REST_KEY = "`"
+const REST_KEY = "x"
 const S_GAIN = 0.0001
 let timer;
 let playing = false;
@@ -36,7 +36,7 @@ function parseSequence(unparsed) {
     let sp = unparsed.split(" ");
     let parsed = []
     sp.forEach((item, index) => {
-        parsed.push(item.split());
+        parsed.push(item.split(""));
     });
     return parsed;
 }
