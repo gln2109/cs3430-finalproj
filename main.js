@@ -20,17 +20,20 @@ document.addEventListener("DOMContentLoaded", function(event) {
         updateValue();
     });
 
+    WHITE_NOISE = whiteNoiseBuffer();
 })
 
 const INPUT_MAP = {
     "k": () => kick(),
     "s": () => snare(),
-    "h": () => hat()
+    "h": () => hat(),
+    "c": () => clap()
 }
 const REST_KEY = "x"
 const S_GAIN = 0.0001
 let timer;
 let playing = false;
+let WHITE_NOISE;
 
 function parseSequence(unparsed) {
     let sp = unparsed.split(" ");
@@ -55,7 +58,7 @@ function stopSequence() {
 }
 
 function startLoop(sequence, bpm) {
-    let tickRate = 60 / bpm
+    let tickRate = 30 / bpm
     let i = 0;
     function mainLoop() {
         if (playing) {
@@ -75,9 +78,9 @@ function startLoop(sequence, bpm) {
 
 
 function kick(time = audioCtx.currentTime) {
-    let volume = kickTuning["volume"];
-    let attack = kickTuning["attack"];
-    let decay = kickTuning["decay"];
+    let volume = kick_tuning["volume"];
+    let attack = kick_tuning["attack"];
+    let decay = kick_tuning["decay"];
     let osc_start_freq = 150;
     let osc_end_freq = 40;
 
@@ -91,6 +94,21 @@ function kick(time = audioCtx.currentTime) {
     gain.gain.setValueAtTime(volume, time + attack)
     gain.gain.exponentialRampToValueAtTime(S_GAIN, time + decay);
 
+    //WIP
+    const noise = audioCtx.createBufferSource();
+    noise.buffer = WHITE_NOISE;
+    const noiseFilter = audioCtx.createBiquadFilter()
+    noiseFilter.type = "highpass";
+    noiseFilter.frequency.value = 3000;
+    const noiseGain = audioCtx.createGain();
+    noiseGain.gain.setValueAtTime(0.15, time);
+    noiseGain.gain.exponentialRampToValueAtTime(S_GAIN, time + 0.01);
+    noise.connect(noiseFilter).connect(noiseGain).connect(globalGain);
+    noise.start(time);
+    noise.stop(time+0.01);
+    //WIP
+
+
     osc.connect(gain).connect(globalGain);
 
     osc.start();
@@ -99,14 +117,14 @@ function kick(time = audioCtx.currentTime) {
 
 
 function snare(time = audioCtx.currentTime) {
-    let volume = snareTuning["volume"];
-    let attack = snareTuning["attack"];
-    let decay = snareTuning["decay"];
+    let volume = snare_tuning["volume"];
+    let attack = snare_tuning["attack"];
+    let decay = snare_tuning["decay"];
     let osc_gain_ratio = 0.7;
     let osc_decay_ratio = 0.8;
 
     let noise = audioCtx.createBufferSource();
-    noise.buffer = whiteNoiseBuffer();
+    noise.buffer = WHITE_NOISE;
 
     const noiseGain = audioCtx.createGain();
     noiseGain.gain.setValueAtTime(S_GAIN, time);
@@ -139,12 +157,12 @@ function snare(time = audioCtx.currentTime) {
 
 
 function hat(time = audioCtx.currentTime) {
-    let volume = hatTuning["volume"];
-    let attack = hatTuning["attack"];
-    let decay = hatTuning["decay"];
+    let volume = hat_tuning["volume"];
+    let attack = hat_tuning["attack"];
+    let decay = hat_tuning["decay"];
 
     let noise = audioCtx.createBufferSource();
-    noise.buffer = whiteNoiseBuffer();
+    noise.buffer = WHITE_NOISE;
 
     const noiseGain = audioCtx.createGain();
     noiseGain.gain.setValueAtTime(S_GAIN, time);
@@ -176,9 +194,39 @@ function hat(time = audioCtx.currentTime) {
     //osc.stop(time + decay);
 }
 
+function clap(time = audioCtx.currentTime) {
+    let volume = clap_tuning["volume"];
+    //let attack = clap_tuning["attack"];
+    let attack = 0.01;
+    let decay = clap_tuning["decay"];
+    let sep = 0.015;
+    const offsets = [0, sep, sep * 2, sep * 3];
+    
+    offsets.forEach(offset => {
+       const noise = audioCtx.createBufferSource();
+       noise.buffer = WHITE_NOISE;
+
+       const filter = audioCtx.createBiquadFilter();
+       filter.type = "bandpass";
+       filter.frequency.value = 300;
+       //filter.Q.value = 0.7;
+       const gain = audioCtx.createGain();
+
+       gain.gain.setValueAtTime(S_GAIN, time + offset);
+       gain.gain.exponentialRampToValueAtTime(volume, time + offset + attack);
+       gain.gain.setValueAtTime(volume, time + offset + attack);
+       gain.gain.exponentialRampToValueAtTime(S_GAIN, time + offset + 0.08);
+
+       noise.connect(filter).connect(gain).connect(globalGain);
+
+       noise.start(time + offset);
+       noise.stop(time + offset + 0.08);
+    });
+}
+
 
 function whiteNoiseBuffer() {
-    var bufferSize = 10 * audioCtx.sampleRate,
+    var bufferSize = audioCtx.sampleRate,
     noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate),
     output = noiseBuffer.getChannelData(0);
     for (var i = 0; i < bufferSize; i++) {
@@ -188,24 +236,24 @@ function whiteNoiseBuffer() {
 }
 
 
-let kickTuning = {"volume": 0.8, "attack": 0.01, "decay": 0.2};
-let snareTuning = {"volume": 0.8, "attack": 0.01, "decay": 0.2};
-let hatTuning = {"volume": 0.8, "attack": 0.01, "decay": 0.2};
-let sliderScales = {"volume": 0.1, "attack": 0.01, "decay": 0.05};
+let kick_tuning = {"name": "kick", "volume": 0.8, "attack": 0.01, "decay": 0.2};
+let snare_tuning = {"name": "snare", "volume": 0.8, "attack": 0.01, "decay": 0.2};
+let hat_tuning = {"name": "hat", "volume": 0.8, "attack": 0.01, "decay": 0.2};
+let clap_tuning = {"name": "clap", "volume": 0.8, "attack": 0.01, "decay": 0.2};
+let slider_scales = {"volume": 0.1, "attack": 0.01, "decay": 0.05};
+
+let drum_tunings = [kick_tuning, snare_tuning, hat_tuning, clap_tuning];
+
+
 
 function updateTuning() {
-    kickTuning["volume"] = document.getElementById("kickVolume").value * sliderScales["volume"];
-    kickTuning["attack"] = document.getElementById("kickAttack").value * sliderScales["attack"];
-    kickTuning["decay"] = document.getElementById("kickDecay").value * sliderScales["decay"];
-
-    snareTuning["volume"] = document.getElementById("snareVolume").value * sliderScales["volume"];
-    snareTuning["attack"] = document.getElementById("snareAttack").value * sliderScales["attack"];
-    snareTuning["decay"] = document.getElementById("snareDecay").value * sliderScales["decay"];
-
-    hatTuning["volume"] = document.getElementById("hatVolume").value * sliderScales["volume"];
-    hatTuning["attack"] = document.getElementById("hatAttack").value * sliderScales["attack"];
-    hatTuning["decay"] = document.getElementById("hatDecay").value * sliderScales["decay"];
-
-    globalGain.gain.setValueAtTime(document.getElementById("masterVolume").value * sliderScales["volume"],
+    drum_tunings.forEach(tuning => {
+        Object.keys(tuning).forEach(key => {
+            if(key !== "name") {
+                tuning[key] = document.getElementById(`${tuning["name"]}_${key}`).value * slider_scales[key]
+            }
+        });
+    })
+    globalGain.gain.setValueAtTime(document.getElementById("masterVolume").value * slider_scales["volume"],
         audioCtx.currentTime);
 }
