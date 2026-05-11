@@ -93,17 +93,17 @@
             <div>
                 <label for="hat_volume">Volume: </label>
                 <span class="sliderValue" data-scale="0.1" data-unit="">0</span>
-                <input type="range" min="1" max="10" value="8" class="slider" id="hat_volume">
+                <input type="range" min="1" max="10" value="" class="slider" id="hat_volume">
             </div>
             <div>
                 <label for="hat_attack">Attack: </label>
                 <span class="sliderValue" data-scale="0.01" data-unit="s">0</span>
-                <input type="range" min="1" max="20" value="1" class="slider" id="hat_attack">
+                <input type="range" min="1" max="20" value="" class="slider" id="hat_attack">
             </div>
             <div>
                 <label for="hat_decay">Decay: </label>
                 <span class="sliderValue" data-scale="0.05" data-unit="s">0</span>
-                <input type="range" min="1" max="20" value="2" class="slider" id="hat_decay">
+                <input type="range" min="1" max="20" value="" class="slider" id="hat_decay">
             </div>
             <div>
                 <label for="hat_bp_filter_freq">BP Filter Freq: </label>
@@ -116,6 +116,7 @@
                 <input type="range" min="1" max="20" value="" class="slider" id="hat_bp_filter_q">
             </div>
         </div>
+
     </div>
     <hr>
     <h3>Sequencer</h3>
@@ -151,6 +152,37 @@
                 ' x ' : Rest
             </span>
             <span>Example: " kh h ksh h "</span>
+        </div>
+    </div>
+    <hr>
+    <div id="additionalDiv">
+
+        <div class="sequencerClass" style="width:980px">
+            <span style="font-weight:bold">Video Demo:</span>
+            <a href="https://youtu.be/EiNw-OAn5N8">https://youtu.be/EiNw-OAn5N8</a><br>
+            <span style="font-weight:bold">Blog Post:</span>
+            <span>
+                This project is a small drum kit made using WebAudio with a kick, snare, and hi-hat.<br>
+                Each drum has a list of sliders to customize its parameters, in addition to play buttons for previewing.
+                This includes volume, attack, and decay for each drum.
+            </span>
+            <span>
+                I created the kick using a sine wave that starts at a specified frequency and falls to another over an interval specified by decay.
+                The user can set both start and end frequencies.
+            </span>
+            <span>
+                My snare consists of white noise with a highpass filter and a triangle wave.
+                The filter and oscillator frequencies can be set, as well as the gain and decay ratios of the oscillator relative to the noise.
+            </span>
+            <span>
+                The hi-hat is just white noise with a band pass filter, again with customizable frequency and q value.
+            </span>
+            <span>
+                The project includes a basic sequencer, using characters for each drum.
+                Characters are placed in sequence separated by spaces, where non-separated characters are played concurrently.
+                The sequencer includes a BPM setting as well as a rest character.
+                Drum parameters can be changed while the sequencer is playing, allowing the user to hear their changes in realtime.
+            </span>
         </div>
     </div>
 
